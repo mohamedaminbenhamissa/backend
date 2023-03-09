@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const validator = require('validator')
-const { use } = require('../routes/api/auth')
+
 
 
 require('dotenv').config()

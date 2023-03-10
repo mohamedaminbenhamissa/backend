@@ -1,7 +1,9 @@
 const mongoose = require('mongoose')
 
 const formationSchema = new mongoose.Schema({
-
+id_formation : {
+    type : String
+},
 nom : {
     type:String
 },

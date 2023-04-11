@@ -6,7 +6,7 @@ app.get('/api/token', async (req, res) => {
 
   try {
    
-    const response = await axios.get('https://diginov.learnybox.com/api/v2/oauth/token/', {
+    const response = await axios.get('https://mohamed1252.learnybox.com/api/v2/oauth/token/', {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }

@@ -27,12 +27,11 @@ const userSchema = mongoose.Schema({
         required:true,
         trim:true
     },
-    role:{
-        type:String,
-        enum:['user','admin'],
-        default:'user'
+    accesstoken:{
+            type:String
     },
-    firstname:{
+
+    fullname:{
         type:String,
         maxLength:100,
         trim:true

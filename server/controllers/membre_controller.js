@@ -1,74 +1,151 @@
-const { Membre } = require('../models/membre_model');
-const { createMembre } = require('../services/membre');
-const { updateMembre } = require('../services/membre');
-const { deleteMembre } = require('../services/membre');
+const {
+  getMembreInfo,
+  addMembreToFormation,
+  updateMembretoFormation,
+  removeMembrefromFormation,
+  ProgressiondesMembres,
+  MembreInfo
+} = require("../services/membre");
+
+const { getFormationId } = require("../services/formation");
+
+const Membre = require("../models/membre_model");
+const { obtainAccessToken } = require("../config/token");
+
+const getMembre = async (req, res) => {
+  const { accessToken, refreshToken, expire_in } = await obtainAccessToken();
+  const formationId = await getFormationId();
+
+  if (!formationId) {
+    res.status(500).send("erreur");
+    return;
+  }
+  if (expire_in === 0) {
+    accessToken = refreshToken;
+  }
+
+  const allmembre = await getMembreInfo(formationId, accessToken);
+
+  //res.status(200).json(allmembre);
+  res.status(200).json({
+    message: "ok",
+    status: 200,
+    data: allmembre,
+  });
+};
+const progressionMembre = async (req, res) => {
+  const { accessToken, refreshToken, expire_in } = await obtainAccessToken();
+  const formationId = await getFormationId();
+
+  if (!formationId) {
+    res.status(500).send("erreur");
+    return;
+  }
+  if (expire_in === 0) {
+    accessToken = refreshToken;
+  }
+  const progression = await ProgressiondesMembres(formationId, accessToken);
+  res.status(200).json({
+    message: "ok",
+    status: 200,
+    data: progression,
+  });
+};
+const MembreData = async (req,res) => {
+  const { accessToken, refreshToken, expire_in } = await obtainAccessToken();
+  if (expire_in === 0) {
+    accessToken = refreshToken;
+  }
+
+  const membreId = req.params.membreId;
+  const info = await MembreInfo(membreId, accessToken);
+  res.status(200).json({
+    message: "ok",
+    status: 200,
+    data: info,
+  });
+}
 
 
-exports.createMembre = async (req, res) => {
+
+
+async function addMembre(req, res) {
   try {
-    // Récupération de l'access token depuis les cookies de login
-    const accessToken = req.cookies.access_token;
+    const formationId = await getFormationId();
+    const { accessToken, refreshToken, expire_in } = await obtainAccessToken();
 
-    // Récupération des informations sur le nouveau membre depuis le corps de la requête
-    const membre = new Membre({
-      prenom: req.body.prenom,
-      nom: req.body.nom,
-      email: req.body.email,
-      groupes: req.body.groupes,
-      adresse: req.body.adresse,
-      ville: req.body.ville,
-      pays: req.body.pays,
-      code_postal: req.body.code_postal,
-      tel: req.body.tel,
-      rgpd: req.body.rgpd,
-      rgpd_date: req.body.rgpd_date,
-      rgpd_notice: req.body.rgpd_aff_notice,
-      rgpd_aff: req.body.rgpd_aff,
-      rrgpd_aff_date: req.body.rrgpd_aff_date,
-      rgpd_aff_notice: req.body.rgpd_aff
-    });
-
-    // Configuration de l'en-tête Authorization avec l'access token
-    const config = {
-      headers: { Authorization: `Bearer ${accessToken}` }
+    if (expire_in === 0) {
+      accessToken = refreshToken;
+    }
+    
+    const membre = req.body;
+    const data = await addMembreToFormation(formationId, membre, accessToken);
+    const newMembre = {
+      prenom: membre.prenom,
+      nom: membre.nom,
+      email: membre.email,
+      groupes: membre.groupes,
+      adresse: membre.adresse,
+      ville: membre.ville,
+      pays: membre.pays,
+      codePostal: membre.codePostal,
+      tel: membre.tel,
+      selectedFormation: membre.selectedFormation,
+      
     };
-
-    // Appel du service pour créer le membre
-    const response = await createMembre(id_formation, membre, config);
-
-    console.log(`Le membre ${membre.prenom} a été ajouté avec succès à la formation ${formationId}.`);
-
-    res.status(200).json({ message: `Le membre ${membre.prenom} a été ajouté avec succès à la formation ${formationId}.` });
+    const savedMembre = await Membre.create(newMembre); // Save the member data to your database
+    res.status(201).json(savedMembre);
   } catch (error) {
-    console.error(`Erreur lors de l'ajout du membre ${membre.prenom} à la formation ${formationId}.`, error);
-
-    res.status(500).json({ error: `Erreur lors de l'ajout du membre ${membre.prenom} à la formation ${formationId}.` });
+    console.error(error);
+    res.status(500).json({ message: 'Error adding member to formation' });
   }
 }
 
-exports.updateMembre  = async(req, res) => {
-  const { id } = req.params;
-  const updatedMembre = req.body;
 
+
+
+
+async function updateMembre(req, res) {
   try {
-    const result = await updateMembre(id, updatedMembre);
-    return res.status(200).json(result);
+    const formationId = await getFormationId();
+    const { accessToken, refreshToken, expire_in } = await obtainAccessToken();
+
+    if (expire_in === 0) {
+      accessToken = refreshToken;
+    }
+
+    const membreId = req.params.id_membre;
+    const updatedMembre = req.body;
+    const data = await updateMembretoFormation(formationId, membreId, updatedMembre, accessToken);
+    const savedMembre = await Membre.findByIdAndUpdate(membreId, updatedMembre); // Update the member data in your database
+    res.status(200).json(savedMembre);
   } catch (error) {
-    console.error(`Error updating member with ID ${id}: ${error.message}`);
-    return res.status(500).json({ error: 'Unable to update member.' });
+    console.error(error);
+    res.status(500).json({ message: 'Error updating member in formation' });
   }
 }
 
-exports.deleteMembre = async (req, res) => {
-  try {
-    const { id_formation, id_membre } = req.params;
-    await deleteMembre(id_formation, id_membre, req.cookies.access_token);
-    res.status(200).json({
-      message: `Le membre avec l'ID ${id_membre} a été supprimé avec succès de la formation avec l'ID ${id_formation}.`,
-    });
-  } catch (error) {
-    console.error(`Erreur lors de la suppression du membre.`, error);
-    res.status(500).json({ message: "Erreur lors de la suppression du membre." });
-  }
+
+const removeMembre = async (req, res) => {
+  const formationId = await getFormationId();
+  const membreId = req.params.membreId
+  const { accessToken, refreshToken, expire_in } = await obtainAccessToken();
+
+      if (expire_in === 0) {
+        accessToken = refreshToken;
+      }
+
+      
+  await removeMembrefromFormation(formationId, membreId,accessToken);
+
+  res.status(204).end();
 };
 
+module.exports = {
+  getMembre,
+  addMembre,
+  updateMembre,
+  removeMembre,
+  progressionMembre,
+  MembreData
+};

@@ -1,72 +1,50 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
+// const formationSchema = new mongoose.Schema({
+//     idFormation:{
+//         type:String
+//     }
+// })
 
 const membreSchema = new mongoose.Schema({
-  prenom: { 
+  membreId: {
     type: String,
-     required: true,
-},
-  nom: { 
-    type: String,
-     required: true 
-},
-email:{
-    type: String,
-    required: true 
-},
-groupes : {
-    type: String,
-    required: true 
-},
-adresse:{
-    type: String,
-    required: true 
-},
-ville:{
-    type: String,
-    required: true 
-},
-pays:{
-    type: String,
-    required: true 
-},
-code_postal:{
-    type: String,
-    required: true 
-},
-tel:{
-    type: String,
-    required: true 
-},
-rgpd:{
-    type: String,
-    required: true 
-},
-rgpd_date:{
-    type: String,
-    required: true 
-},
-rgpd_notice:{
-    type: String,
-    required: true 
-},
-rgpd_aff:{
-    type: String,
-    required: true 
-},
-rrgpd_aff_date:{
-    type: String,
-    required: true 
-},
-rgpd_aff_notice:{
-    type: String,
-    required: true 
-}
+  },
 
+  prenom: {
+    type: String,
+  },
+  nom: {
+    type: String,
+  },
+  email: {
+    type: String,
+  },
+  groupes: {
+    type: String,
+  },
+  adresse: {
+    type: String,
+  },
+  ville: {
+    type: String,
+  },
+  pays: {
+    type: String,
+  },
+  codePostal: {
+    type: String,
+  },
+  tel: {
+    type: String,
+  },
+  selectedFormation: {
+    // type: mongoose.Schema.Types.ObjectId,
+    // ref: "Formation",
+    type: String,
+  },
 });
 
-
-
-const Membre = mongoose.model('Membre', membreSchema);
+const Membre = mongoose.model("Membre", membreSchema);
 
 module.exports = Membre;

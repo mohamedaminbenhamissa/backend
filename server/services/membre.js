@@ -1,49 +1,117 @@
-const axios = require('axios');
+const axios = require("axios");
 
-function createMembre(membre, accessToken, id_formation) {
-  const config = {
-    headers: { Authorization: `Bearer ${accessToken}` },
-  };
+const MembreURL =
+  "https://mohamed1252.learnybox.com/api/v2/formations/{id_formation}/membres/";
+const progressionURL =
+  "https://mohamed1252.learnybox.com/api/v2/formations/{id_formation}/membres/progression/";
 
-  return axios
-    .post(
-      `https://diginov.learnybox.com/api/v2/formations/${id_formation}/membres/`,
-      membre,
-      config
-    )
-    .then((response) => {
-      console.log(`Le membre ${membre.prenom} a été ajouté avec succès à la formation ${formationId}.`);
-      return response.data;
-    })
-    .catch((error) => {
-      console.error(`Erreur lors de l'ajout du membre ${membre.prenom} à la formation ${formationId}.`, error);
-      throw error;
+async function getMembreInfo(formationId, accessToken) {
+  try {
+    const response = await axios.get(
+      `${MembreURL.replace("{id_formation}", formationId)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+
+async function addMembreToFormation(formationId, membre, accessToken) {
+  try {
+    const addMembreURL = `https://mohamed1252.learnybox.com/api/v2/formations/${formationId}/membres/`;
+    const response = await axios.post(addMembreURL, membre, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
     });
-}
-// Function to update a member in a formation
-async function updateMembre(id_formation, id_membre, data, accessToken) {
-  const config = {
-    headers: { Authorization: `Bearer ${accessToken}` },
-  };
-  const membre = new Membre(data);
-  try {
-    const response = await axios.post(`https://diginov.learnybox.com/api/v2/formations/${id_formation}/membres/${id_membre}/`, membre, config);
     return response.data;
   } catch (error) {
-    throw error;
+    console.error(error);
+    throw new Error(error);
+  }
+}
+async function MembreInfo(membreId, accessToken) {
+  try {
+    const addMembreURL = `https://mohamed1252.learnybox.com/api/v2/users/${membreId}/`;
+    const response = await axios.post(addMembreURL, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw new Error(error);
   }
 }
 
-// Function to delete a member from a formation
-async function deleteMembre(id_formation, id_membre, accessToken) {
-  const config = {
-    headers: { Authorization: `Bearer ${accessToken}` },
-  };
+async  function updateMembretoFormation(formationId,membre, membreId,accessToken){
   try {
-    const response = await axios.delete(`https://diginov.learnybox.com/api/v2/formations/${id_formation}/membres/${id_membre}/`, config);
+  const updateMembreURL = `https://mohamed1252.learnybox.com/api/v2/formations/${formationId}/membres/${membreId}/`
+  const response = await axios.post(updateMembreURL, membre, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+  });
+  return response.data;
+  } catch (error) {
+    console.error(error);
+    throw new Error(error);
+  }
+} 
+
+
+
+
+async function removeMembrefromFormation(formationId, membreId,accessToken) {
+  try {
+    const removeMembreURL =
+  `https://mohamed1252.learnybox.com/api/v2/formations/${formationId}/membres/${membreId}/`;
+    const response = await axios.delete(removeMembreURL,
+     
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      }
+    );
     return response.data;
   } catch (error) {
-    throw error;
+    console.error(error);
   }
 }
-module.exports = { createMembre, updateMembre, deleteMembre };
+async function ProgressiondesMembres(formationId, accessToken) {
+  try {
+    const response = await axios.get(
+      `${progressionURL.replace("{id_formation}", formationId)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+module.exports = {
+  getMembreInfo,
+  addMembreToFormation,
+  updateMembretoFormation,
+  removeMembrefromFormation,
+  ProgressiondesMembres,
+  MembreInfo
+};

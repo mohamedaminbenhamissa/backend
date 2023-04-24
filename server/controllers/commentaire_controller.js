@@ -8,11 +8,32 @@ const {
 const Commentaire = require("../models/commentaire_model");
 
 const { getFormationId } = require("../services/formation");
+const { obtainAccessToken } = require("../config/token");
+
 
 const getCommentaires = async (req, res) => {
-  const commentaires = await getCommentaireInfo();
-  res.status(200).json(commentaires);
+  const { accessToken, refreshToken, expire_in } = await obtainAccessToken();
+  const formationId = await getFormationId();
+
+  if (!formationId) {
+    res.status(500).send("erreur");
+    return;
+  }
+  if (expire_in === 0) {
+    accessToken = refreshToken;
+  }
+
+  const commentaires = await getCommentaireInfo(formationId, accessToken);
+
+  //res.status(200).json(allmembre);
+  res.status(200).json({
+    message: "ok",
+    status: 200,
+    data: commentaires,
+  });
 };
+
+
 
 
 async function addCommentaireData(req, res) {

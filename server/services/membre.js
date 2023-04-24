@@ -38,10 +38,10 @@ async function addMembreToFormation(formationId, membre, accessToken) {
     throw new Error(error);
   }
 }
-async function MembreInfo(membreId, accessToken) {
+async function MembreInfo(formationId,membreId, accessToken) {
   try {
-    const addMembreURL = `https://mohamed1252.learnybox.com/api/v2/users/${membreId}/`;
-    const response = await axios.post(addMembreURL, {
+    const addMembreURL = `https://mohamed1252.learnybox.com/api/v2/formations/${formationId}/membres/${membreId}/`;
+    const response = await axios.get(addMembreURL, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -54,10 +54,11 @@ async function MembreInfo(membreId, accessToken) {
   }
 }
 
-async  function updateMembretoFormation(formationId,membre, membreId,accessToken){
+async  function updateMembretoFormation(formationId,membreId,membre,accessToken){
   try {
   const updateMembreURL = `https://mohamed1252.learnybox.com/api/v2/formations/${formationId}/membres/${membreId}/`
-  const response = await axios.post(updateMembreURL, membre, {
+  console.log(typeof updateMembreURL);
+  const response = await axios.patch(updateMembreURL, membre, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
       'Content-Type': 'application/x-www-form-urlencoded',

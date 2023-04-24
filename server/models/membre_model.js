@@ -7,9 +7,9 @@ const mongoose = require("mongoose");
 // })
 
 const membreSchema = new mongoose.Schema({
-  membreId: {
-    type: String,
-  },
+  // membreId: {
+  //   type: String,
+  // },
 
   prenom: {
     type: String,

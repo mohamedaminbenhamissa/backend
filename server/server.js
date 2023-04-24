@@ -32,7 +32,7 @@ app.use("/api/formation",formations)
 app.use("/api",membre)
 app.use("/api",transaction)
 app.use("/api",activites)
-// app.use('/api',commentaire)
+app.use('/api',commentaire)
 const port = process.env.PORT || 3003
 app.listen(port,()=>{
     console.log(`Server is running on port  ${port}`)

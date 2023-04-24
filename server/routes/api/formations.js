@@ -7,5 +7,6 @@ get( formationsController.getFormations, (req, res) => {
   
   res.status(200).send(res.locals.formations)
 });
+// router.get('/formations', formationsController.getFormations);
 
 module.exports = router;

@@ -58,7 +58,8 @@ const MembreData = async (req,res) => {
   }
 
   const membreId = req.params.membreId;
-  const info = await MembreInfo(membreId, accessToken);
+  const formationId = await getFormationId(); 
+  const info = await MembreInfo(formationId,membreId, accessToken);
   res.status(200).json({
     message: "ok",
     status: 200,
@@ -114,10 +115,10 @@ async function updateMembre(req, res) {
       accessToken = refreshToken;
     }
 
-    const membreId = req.params.id_membre;
+    const membreId = req.params.membreId;
     const updatedMembre = req.body;
     const data = await updateMembretoFormation(formationId, membreId, updatedMembre, accessToken);
-    const savedMembre = await Membre.findByIdAndUpdate(membreId, updatedMembre); // Update the member data in your database
+    const savedMembre = await Membre.updateOne(data); // Update the member data in your database
     res.status(200).json(savedMembre);
   } catch (error) {
     console.error(error);

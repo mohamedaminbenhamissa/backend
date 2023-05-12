@@ -14,6 +14,7 @@ const membre = require('./routes/api/membre')
 const transaction = require('./routes/api/transaction')
 const activites = require('./routes/api/activites')
 const commentaire = require('./routes/api/commentaire')
+const aws = require('./routes/api/aws')
 const { checkToken } = require('./middleware/auth')
 
 
@@ -33,6 +34,7 @@ app.use("/api",membre)
 app.use("/api",transaction)
 app.use("/api",activites)
 app.use('/api',commentaire)
+app.use('/aws',aws)
 const port = process.env.PORT || 3003
 app.listen(port,()=>{
     console.log(`Server is running on port  ${port}`)

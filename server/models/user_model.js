@@ -31,12 +31,17 @@ const userSchema = mongoose.Schema({
             type:String
     },
 
-    fullname:{
+    pseudo:{
         type:String,
         maxLength:100,
         trim:true
     },
     lastname:{
+        type:String,
+        maxLength:100,
+        trim:true
+    },
+    firstname:{
         type:String,
         maxLength:100,
         trim:true

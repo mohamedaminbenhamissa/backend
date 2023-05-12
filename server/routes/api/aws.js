@@ -1,21 +1,10 @@
-const express = require('express')
-require('dotenv').config()
-const multer = require('multer')
-const AWS = require('aws-sdk')
+const express = require('express');
+const VideoController = require('../../controllers/aws_controller');
 
-const s3 = new AWS.S3({
-    accessKeyId: process.env.AWS_ID,
-    secretAccessKey: process.env.AWS_SECRET
-})
+const router = express.Router();
+const videoController = new VideoController();
 
-const storage = multer.memoryStorage({
-    destination: function(req, file , callback){
-        callback(null,'')
-    }
-})
+router.post('/upload', videoController.upload);
+router.get('/:videoId', videoController.get);
 
-const upload = multer({storage}).single('video')
-
-app.post('/upload',upload,(res,res) => {
-    res.send("hello world")
-})
+module.exports = router;

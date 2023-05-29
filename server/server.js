@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
-const swaggerSetup = require('./swagger');
+const swaggerSpec  = require('./swagger');
+const swaggerUi = require('swagger-ui-express');
+const swaggerJSDoc = require('swagger-jsdoc')
 const mongoose = require('mongoose')
 const cookieParser = require('cookie-parser')
 var cors = require('cors')
@@ -24,8 +26,17 @@ mongoose.connect(mongoUri,{
         useUnifiedTopology: true,
         useCreateIndex: true,
         useFindAndModify: false
-})
-swaggerSetup(app);
+}).then(() => {
+    console.log('Connected to MongoDB');
+  })
+  .catch((error) => {
+    console.error('Error connecting to MongoDB:', error);
+  });
+  
+  
+
+  
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(checkToken)
 app.use("/api/users",users)

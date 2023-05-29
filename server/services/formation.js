@@ -2,6 +2,10 @@ const axios = require('axios');
 const learnBoxFormationURL = 'https://mohamed1252.learnybox.com/api/v2/formations/';
 const Formation = require('../models/formation_model')
 
+
+
+
+
 async function getFormationInfo(accessToken) {
  
   try {

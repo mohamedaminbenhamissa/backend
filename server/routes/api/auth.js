@@ -35,6 +35,7 @@ router.route('/signin').post(async (req, res) => {
       // Find the user
       let user = await User.findOne({ email: req.body.email })
       if (!user) return res.status(400).json({ message: "Email doesn't exist" })
+      
   
       // Compare the password
       const compare = await user.comparePassword(req.body.password)
@@ -72,7 +73,6 @@ router.route('/isauth')
 })
  
 
-
 // filtre sur les donner ajouter a la base 
 const getUserProps = (user) => {
     return{
@@ -83,7 +83,5 @@ const getUserProps = (user) => {
         firstname : user.firstname
     }
 }
-
-
 
 module.exports = router

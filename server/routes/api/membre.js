@@ -3,6 +3,8 @@ const router = express.Router();
 const membresController = require('../../controllers/membre_controller');
 
 
+router.get('/', membresController.getAllUsers);
+
 router.get('/allmembre', membresController.getMembre);
 /**
  * @swagger

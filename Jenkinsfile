@@ -1,19 +1,37 @@
 pipeline {
   agent any
-
+  options {
+    buildDiscarder(logRotator(numToKeepStr: '5'))
+  }
+  environment {
+    DOCKERHUB_CREDENTIALS = credentials('dockerhub')
+  }
   stages {
-   
-
-    stage('Build Docker Image') {
+    stage('Build') {
       steps {
-        sh 'docker build -t backend:prod .'
+        bat 'docker build -t mohamedaminbenhamissa/backend:v1 .'
       }
     }
-
-    stage('Deploy') {
+    stage('Login') {
       steps {
-        sh 'docker run -p 3003:3003 backend:prod'
+      withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+         //echo %DOCKERHUB_PASSWORD% | docker login -u %DOCKERHUB_USERNAME% --password-stdin
+          bat """
+           docker login -u %DOCKERHUB_USERNAME% -p %DOCKERHUB_PASSWORD%
+          """
+        }
       }
+    }
+    stage('Push') {
+      steps {
+        //bat 'docker push mohamedaminbenhamissa/jenkins-docker-hub'
+        bat 'docker push mohamedaminbenhamissa/backend:v1'
+      }
+    }
+  }
+  post {
+    always {
+      bat 'docker logout'
     }
   }
 }
